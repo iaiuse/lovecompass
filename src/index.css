@@ -1,0 +1,253 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+}
+
+/* Custom utility classes */
+.perspective-1200 {
+  perspective: 1200px;
+}
+
+.transform-style-preserve-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
+.insight-strong {
+  color: #f3d28c !important;
+  font-weight: 600 !important;
+}
+
+/* Scrollbar styling for card content */
+.overflow-y-auto::-webkit-scrollbar {
+  width: 6px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+}
+
+/* Firefox scrollbar */
+.overflow-y-auto {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.3) rgba(255, 255, 255, 0.1);
+}
+
+/* Custom border width */
+.border-3 {
+  border-width: 3px;
+}
+
+/* Custom width/height */
+.w-18 {
+  width: 4.5rem;
+}
+
+.h-18 {
+  height: 4.5rem;
+}
+
+.w-70 {
+  width: 17.5rem;
+}
+
+.h-70 {
+  height: 17.5rem;
+}
+
+.w-18 {
+  width: 4.5rem;
+}
+
+.h-18 {
+  height: 4.5rem;
+}
+/* Glass morphism effects */
+.glass {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Smooth animations */
+* {
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Custom gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Touch improvements for mobile */
+.touch-manipulation {
+  touch-action: manipulation;
+}
+
+/* Mobile-specific improvements */
+@media (max-width: 640px) {
+  .perspective-1200 {
+    perspective: 800px;
+  }
+}
+
+/* Responsive wheel positioning */
+.wheel-sector {
+  /* 移动端 */
+  width: 4rem;
+  height: 4rem;
+  padding: 0.375rem;
+}
+
+.wheel-sector > div:first-child {
+  /* 图标容器 */
+  width: 1.75rem;
+  height: 1.75rem;
+}
+
+.wheel-sector > div:first-child img {
+  /* 图标 */
+  width: 1rem;
+  height: 1rem;
+}
+
+.wheel-sector > div:last-child {
+  /* 文字 */
+  font-size: 0.75rem;
+}
+
+.wheel-center {
+  width: 6rem;
+  height: 6rem;
+}
+
+@media (min-width: 640px) {
+  .wheel-sector {
+    width: 6rem;
+    height: 6rem;
+    padding: 0.5rem;
+  }
+  
+  .wheel-sector > div:first-child {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+  
+  .wheel-sector > div:first-child img {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+  
+  .wheel-sector > div:last-child {
+    font-size: 0.875rem;
+  }
+  
+  .wheel-center {
+    width: 8rem;
+    height: 8rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .wheel-sector {
+    width: 7rem;
+    height: 7rem;
+    padding: 0.625rem;
+  }
+  
+  .wheel-sector > div:first-child {
+    width: 3rem;
+    height: 3rem;
+  }
+  
+  .wheel-sector > div:first-child img {
+    width: 2rem;
+    height: 2rem;
+  }
+  
+  .wheel-sector > div:last-child {
+    font-size: 0.875rem;
+  }
+  
+  .wheel-center {
+    width: 9rem;
+    height: 9rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .wheel-sector {
+    width: 8rem;
+    height: 8rem;
+    padding: 0.75rem;
+  }
+  
+  .wheel-sector > div:first-child {
+    width: 3.5rem;
+    height: 3.5rem;
+  }
+  
+  .wheel-sector > div:first-child img {
+    width: 2.25rem;
+    height: 2.25rem;
+  }
+  
+  .wheel-sector > div:last-child {
+    font-size: 1rem;
+  }
+  
+  .wheel-center {
+    width: 10rem;
+    height: 10rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .wheel-sector {
+    width: 9rem;
+    height: 9rem;
+    padding: 0.75rem;
+  }
+  
+  .wheel-sector > div:first-child {
+    width: 4rem;
+    height: 4rem;
+  }
+  
+  .wheel-sector > div:first-child img {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+  
+  .wheel-sector > div:last-child {
+    font-size: 1rem;
+  }
+  
+  .wheel-center {
+    width: 11rem;
+    height: 11rem;
+  }
+}
