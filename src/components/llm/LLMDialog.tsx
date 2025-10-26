@@ -497,53 +497,85 @@ const LLMDialog: React.FC<LLMDialogProps> = ({ isVisible, onClose, methods, onCa
 
           {/* Generated Card Display */}
           {generatedCard && (
-            <div className="mt-6 p-6 bg-gradient-to-br from-pink-50 to-purple-50 rounded-2xl border border-pink-200">
+            <div className="mt-6">
               <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center">
                 <span className="w-2 h-2 bg-pink-500 rounded-full mr-2"></span>
                 生成的育儿锦囊
               </h3>
               
-              <div className="space-y-4">
-                {Object.entries(generatedCard).map(([key, value]) => (
-                  <div key={key} className="bg-white rounded-lg p-4 border border-gray-200">
-                    <div className="flex items-center justify-between mb-2">
-                      <h4 className="font-semibold text-gray-700 capitalize">
-                        {key.replace('_', ' ')}
-                      </h4>
-                      <button
-                        onClick={() => copyToClipboard(value, key)}
-                        className="text-gray-400 hover:text-gray-600 transition-colors"
-                      >
-                        {copiedField === key ? (
-                          <Check className="w-4 h-4 text-green-500" />
-                        ) : (
-                          <Copy className="w-4 h-4" />
-                        )}
-                      </button>
-                    </div>
-                    <p className="text-gray-600 text-sm whitespace-pre-wrap">{value}</p>
+              {/* 卡片式展示 */}
+              <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
+                {/* 卡片头部 */}
+                <div className="bg-gradient-to-r from-pink-500 to-purple-600 p-6 text-white">
+                  <div className="flex items-center justify-between mb-2">
+                    <h4 className="text-2xl font-bold">{generatedCard.front_title}</h4>
+                    <span className="bg-white/20 px-3 py-1 rounded-full text-sm font-semibold">
+                      {generatedCard.category}
+                    </span>
                   </div>
-                ))}
-              </div>
+                  <p className="text-white/90 text-sm font-medium">{generatedCard.role_name}</p>
+                </div>
 
-              <div className="mt-6 flex space-x-3">
-                <button
-                  onClick={handleSaveCard}
-                  className="flex-1 bg-gradient-to-r from-pink-500 to-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-pink-600 hover:to-purple-700 transition-all duration-300 transform hover:scale-105"
-                >
-                  保存到 {generatedCard.category}
-                </button>
-                <button
-                  onClick={() => {
-                    setGeneratedCard(null);
-                    setCurrentStep('intro');
-                    setMessages([]);
-                    setDraftData({});
-                  }}
-                  className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition-colors"
-                >
-                  重新开始
-                </button>
+                {/* 卡片内容 */}
+                <div className="p-6 space-y-5">
+                  {/* 核心问题 */}
+                  <div className="bg-blue-50 rounded-xl p-4 border-l-4 border-blue-500">
+                    <h5 className="font-semibold text-blue-900 mb-2 flex items-center">
+                      💡 看见"为什么"
+                    </h5>
+                    <p className="text-blue-800 text-sm leading-relaxed">{generatedCard.see_why}</p>
+                  </div>
+
+                  {/* 解决方案 */}
+                  <div className="bg-green-50 rounded-xl p-4 border-l-4 border-green-500">
+                    <h5 className="font-semibold text-green-900 mb-2 flex items-center">
+                      ✨ 解决方案
+                    </h5>
+                    <div className="text-green-800 text-sm whitespace-pre-wrap leading-relaxed">
+                      {generatedCard.solution_list}
+                    </div>
+                  </div>
+
+                  {/* 神奇变化 */}
+                  <div className="bg-purple-50 rounded-xl p-4 border-l-4 border-purple-500">
+                    <h5 className="font-semibold text-purple-900 mb-2 flex items-center">
+                      🌟 神奇变化
+                    </h5>
+                    <p className="text-purple-800 text-sm leading-relaxed">{generatedCard.the_change}</p>
+                  </div>
+
+                  {/* 智慧金句 */}
+                  <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl p-4 border-2 border-yellow-300">
+                    <div className="flex items-start">
+                      <span className="text-2xl mr-3">💎</span>
+                      <div>
+                        <h5 className="font-semibold text-orange-900 mb-1">智慧金句</h5>
+                        <p className="text-orange-800 text-sm italic leading-relaxed">"{generatedCard.wisdom_quote}"</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 操作按钮 */}
+                <div className="bg-gray-50 px-6 py-4 border-t border-gray-200 flex space-x-3">
+                  <button
+                    onClick={handleSaveCard}
+                    className="flex-1 bg-gradient-to-r from-pink-500 to-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-pink-600 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-md"
+                  >
+                    保存到 {generatedCard.category}
+                  </button>
+                  <button
+                    onClick={() => {
+                      setGeneratedCard(null);
+                      setCurrentStep('intro');
+                      setMessages([]);
+                      setDraftData({});
+                    }}
+                    className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
+                  >
+                    重新开始
+                  </button>
+                </div>
               </div>
             </div>
           )}
