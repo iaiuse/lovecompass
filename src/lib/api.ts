@@ -1,6 +1,4 @@
 // API客户端 - 用于与Cloudflare Workers API通信
-import { supabase } from './supabase'
-
 const API_BASE_URL = '/api'
 
 export interface Method {
@@ -27,10 +25,10 @@ interface ApiResponse<T> {
   success?: boolean
 }
 
-// 获取认证token
+// 获取认证token - 从localStorage获取
 async function getAuthToken(): Promise<string | null> {
-  const { data: { session } } = await supabase.auth.getSession()
-  return session?.access_token || null
+  // 从localStorage获取存储的token
+  return localStorage.getItem('auth_token')
 }
 
 // 通用API请求函数

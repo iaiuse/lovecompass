@@ -23,10 +23,13 @@
 
 ```
 SUPABASE_URL=你的_supabase_url
-SUPABASE_SERVICE_ROLE_KEY=你的_service_role_key
+SUPABASE_ANON_KEY=你的_anon_key
 ```
 
-**重要**: 使用 `SUPABASE_SERVICE_ROLE_KEY` 而不是 `SUPABASE_ANON_KEY`，因为这是服务端API，需要更高权限。
+**重要说明**：
+- 前端不再直接连接 Supabase，所有数据操作通过 API 进行
+- 后端使用 `SUPABASE_ANON_KEY`（anon key，用于用户认证）
+- 只需要在 Cloudflare Pages 控制台中配置后端环境变量
 
 ### 2. 获取 Supabase 配置
 
@@ -35,7 +38,7 @@ SUPABASE_SERVICE_ROLE_KEY=你的_service_role_key
 3. 进入 **Settings** → **API**
 4. 复制以下信息：
    - **Project URL** → 用作 `SUPABASE_URL`
-   - **service_role** key → 用作 `SUPABASE_SERVICE_ROLE_KEY`
+   - **anon public** key → 用作 `SUPABASE_ANON_KEY`
 
 ### 3. 部署到 Cloudflare Pages
 
@@ -63,8 +66,8 @@ wrangler pages deploy dist --project-name=lovecompass
 在 Cloudflare Pages 控制台中：
 1. 进入 **Settings** → **Environment variables**
 2. 添加以下变量：
-   - `SUPABASE_URL`
-   - `SUPABASE_SERVICE_ROLE_KEY`
+   - `SUPABASE_URL`（后端用）
+   - `SUPABASE_ANON_KEY`（后端用）
 
 ## 安全配置
 

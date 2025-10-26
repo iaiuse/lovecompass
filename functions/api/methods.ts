@@ -28,7 +28,7 @@ export const onRequest = async (context: any) => {
       )
     }
 
-    // 创建Supabase客户端（使用anon key，因为我们需要验证用户）
+    // 创建Supabase客户端
     const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
     // 从请求头获取Authorization token
