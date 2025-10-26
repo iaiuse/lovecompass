@@ -7,21 +7,15 @@
     <title>育儿锦囊</title>
     <script>
       // 处理 OAuth 回调
-      if (window.location.pathname === '/auth/callback') {
-        const params = new URLSearchParams(window.location.search)
-        const code = params.get('code')
-        
-        if (code) {
-          // 将 code 保存到 localStorage，然后关闭窗口或重定向
-          localStorage.setItem('oauth_code', code)
-          // 尝试关闭窗口（如果是弹窗）
-          if (window.opener) {
-            window.close()
-          } else {
-            // 否则重定向回主页面
-            window.location.href = '/'
-          }
-        }
+      const urlParams = new URLSearchParams(window.location.search)
+      const code = urlParams.get('code')
+      const oauthCallback = urlParams.get('oauth_callback')
+      
+      if (code) {
+        // 将 code 保存到 localStorage
+        localStorage.setItem('oauth_code', code)
+        // 清除 URL 中的参数
+        window.history.replaceState({}, document.title, window.location.pathname)
       }
     </script>
   </head>

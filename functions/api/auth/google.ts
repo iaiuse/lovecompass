@@ -38,8 +38,9 @@ export const onRequest = async (context: any) => {
     const supabase = createClient(supabaseUrl, supabaseAnonKey)
     
     const url = new URL(request.url)
-    // 构建回调 URL，接收 Google 返回的 code
-    const redirectTo = `${url.origin}/auth/callback`
+    // 构建回调 URL - 重定向回首页，前端会处理 OAuth 回调
+    // 注意：URL 不应该包含 hash 符号，因为这是服务器端重定向
+    const redirectTo = `${url.origin}/?oauth_callback=true`
 
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
