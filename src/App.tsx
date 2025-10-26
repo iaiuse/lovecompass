@@ -376,16 +376,30 @@ function App() {
 
   return (
     <>
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 text-slate-800 overflow-hidden">
+      <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-100 text-slate-800 overflow-hidden relative">
+        {/* 背景装饰元素 */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-10 left-10 w-40 h-40 bg-gradient-to-br from-pink-200/30 to-purple-200/30 rounded-full animate-pulse"></div>
+          <div className="absolute top-32 right-16 w-32 h-32 bg-gradient-to-br from-blue-200/25 to-cyan-200/25 rounded-full animate-bounce"></div>
+          <div className="absolute bottom-20 left-1/4 w-24 h-24 bg-gradient-to-br from-yellow-200/30 to-orange-200/30 rounded-full animate-pulse"></div>
+          <div className="absolute bottom-32 right-1/3 w-20 h-20 bg-gradient-to-br from-green-200/25 to-emerald-200/25 rounded-full animate-bounce"></div>
+          <div className="absolute top-1/2 left-8 w-16 h-16 bg-gradient-to-br from-purple-200/20 to-pink-200/20 rounded-full animate-pulse"></div>
+          <div className="absolute top-1/4 right-8 w-12 h-12 bg-gradient-to-br from-cyan-200/25 to-blue-200/25 rounded-full animate-bounce"></div>
+        </div>
         {/* 只在PC端显示Header */}
         {!isMobile && (
-          <header className="bg-white/80 backdrop-blur-md border-b border-white/20 shadow-sm sticky top-0 z-40">
-            <div className="max-w-7xl mx-auto px-6 py-4">
+          <header className="bg-white/90 backdrop-blur-lg border-b border-white/30 shadow-lg sticky top-0 z-40 relative">
+            {/* 头部装饰渐变 */}
+            <div className="absolute inset-0 bg-gradient-to-r from-pink-500/5 via-purple-500/5 to-indigo-500/5"></div>
+            
+            <div className="max-w-7xl mx-auto px-6 py-4 relative z-10">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
-                  <Logo size={40} variant="minimal" />
+                  <div className="transform hover:scale-105 transition-transform duration-300">
+                    <Logo size={40} variant="minimal" />
+                  </div>
                   <div>
-                    <h1 className="text-2xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent">
+                    <h1 className="text-2xl font-bold bg-gradient-to-r from-pink-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
                       育儿锦囊
                     </h1>
                     <p className="text-sm text-slate-500 font-medium">深度探索轮盘 V3.2</p>
@@ -394,36 +408,39 @@ function App() {
                 <div className="flex items-center space-x-3">
                   <button
                     onClick={() => setShowMethodManager(true)}
-                    className="flex items-center space-x-2 px-3 py-2 bg-blue-50 hover:bg-blue-100 rounded-full border border-blue-200 transition-all"
+                    className="group flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-pink-50 to-purple-50 hover:from-pink-100 hover:to-purple-100 rounded-full border border-pink-200 transition-all duration-300 transform hover:scale-105 shadow-md hover:shadow-lg"
                     title="管理方法"
                   >
-                    <Settings className="w-4 h-4 text-blue-600" />
-                    <span className="text-sm font-medium text-blue-700">
+                    <Settings className="w-4 h-4 text-pink-600 group-hover:rotate-90 transition-transform duration-300" />
+                    <span className="text-sm font-semibold text-pink-700">
                       {methods.length} 个方法
                     </span>
+                    <div className="w-2 h-2 bg-pink-400 rounded-full animate-pulse"></div>
                   </button>
                   <div className="flex items-center space-x-2">
-                    <div className="flex items-center space-x-2 px-3 py-2 bg-white/60 rounded-full border border-white/30">
+                    <div className="flex items-center space-x-2 px-4 py-2 bg-white/80 backdrop-blur-sm rounded-full border border-white/40 shadow-md hover:shadow-lg transition-all duration-300">
                       {user.avatar_url ? (
                         <img 
                           src={user.avatar_url} 
                           alt="用户头像" 
-                          className="w-4 h-4 rounded-full object-cover"
+                          className="w-5 h-5 rounded-full object-cover ring-2 ring-pink-200"
                         />
                       ) : (
-                        <User className="w-4 h-4 text-slate-600" />
+                        <div className="w-5 h-5 bg-gradient-to-br from-pink-400 to-purple-500 rounded-full flex items-center justify-center">
+                          <User className="w-3 h-3 text-white" />
+                        </div>
                       )}
-                      <span className="text-sm font-medium text-slate-700">
+                      <span className="text-sm font-semibold text-slate-700">
                         {user.display_name || user.name || user.email}
                       </span>
                     </div>
                     <button
                       onClick={handleSignOut}
-                      className="flex items-center space-x-1 px-3 py-2 bg-red-50 hover:bg-red-100 rounded-full border border-red-200 transition-all"
+                      className="group flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-red-50 to-pink-50 hover:from-red-100 hover:to-pink-100 rounded-full border border-red-200 transition-all duration-300 transform hover:scale-105 shadow-md hover:shadow-lg"
                       title="退出登录"
                     >
-                      <LogOut className="w-4 h-4 text-red-600" />
-                      <span className="text-sm font-medium text-red-700">退出</span>
+                      <LogOut className="w-4 h-4 text-red-600 group-hover:-translate-x-1 transition-transform duration-300" />
+                      <span className="text-sm font-semibold text-red-700">退出</span>
                     </button>
                   </div>
                 </div>

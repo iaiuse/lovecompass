@@ -42,15 +42,21 @@ export const onRequest = async (context: any) => {
 
     const token = authHeader.replace('Bearer ', '')
     
+    // 添加调试信息
+    console.log('Methods API - Token received:', token ? 'Yes' : 'No', 'Length:', token?.length)
+    
     // 验证token并获取用户
     const { data: { user }, error: authError } = await supabase.auth.getUser(token)
     
     if (authError || !user) {
+      console.error('Methods API - Auth error:', authError)
       return new Response(
-        JSON.stringify({ error: 'Invalid or expired token' }),
+        JSON.stringify({ error: 'Invalid or expired token', details: authError?.message }),
         { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }
+    
+    console.log('Methods API - User authenticated:', user.id)
 
     if (request.method === 'GET') {
       // 获取用户的方法

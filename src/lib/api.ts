@@ -48,6 +48,7 @@ async function apiRequest<T>(
 ): Promise<{ data: T | null; error: string | null }> {
   try {
     const token = await getAuthToken()
+    console.log('API Request - Token available:', !!token, 'Length:', token?.length)
     if (!token) {
       return { data: null, error: 'No authentication token' }
     }

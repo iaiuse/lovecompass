@@ -56,13 +56,22 @@ export const onRequest = async (context: any) => {
       )
     }
 
-    // 返回用户信息
+    // 获取用户配置文件信息
+    const { data: profile } = await supabase
+      .from('user_profiles')
+      .select('display_name, avatar_url')
+      .eq('user_id', user.id)
+      .single()
+
+    // 返回用户信息，包含头像和显示名称
     return new Response(
       JSON.stringify({
         user: {
           id: user.id,
           email: user.email,
-          name: user.user_metadata?.name || user.user_metadata?.full_name
+          name: user.user_metadata?.name || user.user_metadata?.full_name,
+          display_name: profile?.display_name || user.user_metadata?.name || user.user_metadata?.full_name,
+          avatar_url: profile?.avatar_url || user.user_metadata?.avatar_url || user.user_metadata?.picture
         },
         token: token
       }),
