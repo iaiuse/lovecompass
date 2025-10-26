@@ -1,0 +1,24 @@
+# Cloudflare Pages 配置文件
+name = "lovecompass"
+compatibility_date = "2024-01-01"
+
+# Pages Functions 配置
+[env.production]
+# 环境变量将在 Cloudflare Pages 控制台中设置
+# 注意：这些变量需要在 Cloudflare Pages 控制台中配置
+# SUPABASE_URL = "your_supabase_url"
+# SUPABASE_ANON_KEY = "your_anon_key"
+
+# 构建配置
+[build]
+command = "npm run build"
+cwd = "."
+
+# 输出目录
+[build.output]
+dir = "dist"
+
+# Pages Functions 设置
+[functions]
+# 启用 Edge Runtime
+runtime = "edge"

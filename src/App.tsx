@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { getMethods, getCasesByMethodId, createCase, updateCase, deleteCase, Method, Case, CaseData } from './lib/supabase';
-import { Plus, CreditCard as Edit, Trash2 } from 'lucide-react';
+import { getMethods, getCasesByMethodId, createCase, updateCase, deleteCase, Method, Case } from './lib/api';
+import { CaseData } from './lib/supabase';
+import { Plus, CreditCard as Edit, Trash2, LogIn, LogOut, User } from 'lucide-react';
 import ResponsiveWheel from './components/ResponsiveWheel';
 import MobileGrid from './components/MobileGrid';
 import CaseForm from './components/CaseForm';
 import DeleteConfirmModal from './components/DeleteConfirmModal';
 import LoadingSpinner from './components/LoadingSpinner';
+import AuthModal from './components/AuthModal';
 import { useScreenSize } from './hooks/useScreenSize';
+import { useAuth } from './contexts/AuthContext';
 
 const Modal: React.FC<{
   isVisible: boolean;
@@ -139,17 +142,32 @@ function App() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deletingCase, setDeletingCase] = useState<Case | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
   const { isMobile } = useScreenSize();
+  const { user, signOut, loading: authLoading } = useAuth();
 
   useEffect(() => {
-    loadMethods();
-  }, []);
+    if (user) {
+      loadMethods();
+    } else {
+      setMethods([]);
+      setCases([]);
+      setSelectedMethod(null);
+      setSelectedCase(null);
+    }
+  }, [user]);
 
   const loadMethods = async () => {
+    if (!user) return;
+    
     setLoading(true);
     const methodsData = await getMethods();
     setMethods(methodsData);
     setLoading(false);
+  };
+
+  const handleSignOut = async () => {
+    await signOut();
   };
 
   const handleSectorClick = async (method: Method) => {
@@ -235,7 +253,7 @@ function App() {
     setDeletingCase(null);
   };
 
-  if (loading) {
+  if (authLoading || loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
         <div className="flex flex-col items-center">
@@ -246,8 +264,34 @@ function App() {
     );
   }
 
-  const angleStep = 360 / methods.length;
-  const radius = 285;
+  // 如果用户未登录，显示登录界面
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center">
+        <div className="text-center max-w-md mx-4">
+          <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
+            <span className="text-white font-bold text-3xl">育</span>
+          </div>
+          <h1 className="text-3xl font-bold text-slate-800 mb-4">育儿锦囊</h1>
+          <p className="text-lg text-slate-600 mb-8">深度探索轮盘 V3.2</p>
+          <p className="text-slate-500 mb-8">请登录以开始您的育儿锦囊之旅</p>
+          <button
+            onClick={() => setShowAuthModal(true)}
+            className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-8 py-3 rounded-lg font-semibold hover:from-blue-600 hover:to-indigo-700 transition-all flex items-center mx-auto"
+          >
+            <LogIn className="w-5 h-5 mr-2" />
+            登录 / 注册
+          </button>
+        </div>
+        
+        <AuthModal
+          isVisible={showAuthModal}
+          onClose={() => setShowAuthModal(false)}
+        />
+      </div>
+    );
+  }
+
 
   return (
     <>
@@ -273,6 +317,22 @@ function App() {
                     <span className="text-sm font-medium text-blue-700">
                       {methods.length} 个方法
                     </span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-2 px-3 py-2 bg-white/60 rounded-full border border-white/30">
+                      <User className="w-4 h-4 text-slate-600" />
+                      <span className="text-sm font-medium text-slate-700">
+                        {user.email}
+                      </span>
+                    </div>
+                    <button
+                      onClick={handleSignOut}
+                      className="flex items-center space-x-1 px-3 py-2 bg-red-50 hover:bg-red-100 rounded-full border border-red-200 transition-all"
+                      title="退出登录"
+                    >
+                      <LogOut className="w-4 h-4 text-red-600" />
+                      <span className="text-sm font-medium text-red-700">退出</span>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -397,7 +457,7 @@ function App() {
       {showCaseForm && selectedMethod && (
         <CaseForm
           method={selectedMethod}
-          case={editingCase}
+          case={editingCase || undefined}
           onSave={handleSaveCase}
           onCancel={() => {
             setShowCaseForm(false);
@@ -414,6 +474,12 @@ function App() {
         onConfirm={confirmDelete}
         onCancel={cancelDelete}
         isDeleting={isDeleting}
+      />
+
+      {/* 认证模态框 */}
+      <AuthModal
+        isVisible={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
       />
     </>
   );
