@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Send, X, Bot, User, Copy, Check, Sparkles, Heart, Star } from 'lucide-react';
-import { createCase, Method, callLLM } from '../../lib/api';
+import { createCase, Method, callLLM, Case } from '../../lib/api';
+import { ToastContainer, Toast, ToastType } from '../ui/Toast';
 
 interface LLMDialogProps {
   isVisible: boolean;
@@ -32,11 +33,34 @@ const LLMDialog: React.FC<LLMDialogProps> = ({ isVisible, onClose, methods, onCa
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState<'intro' | 'question1' | 'question2' | 'question3' | 'processing' | 'result'>('intro');
-  const [draftData, setDraftData] = useState<any>(null);
+  const [draftData, setDraftData] = useState<{
+    question1?: string;
+    question2?: string;
+    question3?: string;
+    protagonist?: string;
+    event?: string;
+    coreProblem?: string;
+    solution?: string;
+    result?: string;
+    insight?: string;
+  }>({});
   const [generatedCard, setGeneratedCard] = useState<GeneratedCard | null>(null);
   const [copiedField, setCopiedField] = useState<string | null>(null);
   const [loadingMessage, setLoadingMessage] = useState('');
+  const [toasts, setToasts] = useState<Toast[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const showToast = (message: string, type: ToastType = 'info') => {
+    const id = Date.now().toString();
+    setToasts(prev => [...prev, { id, message, type }]);
+    setTimeout(() => {
+      setToasts(prev => prev.filter(toast => toast.id !== id));
+    }, 3000);
+  };
+
+  const removeToast = (id: string) => {
+    setToasts(prev => prev.filter(toast => toast.id !== id));
+  };
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -52,7 +76,7 @@ const LLMDialog: React.FC<LLMDialogProps> = ({ isVisible, onClose, methods, onCa
       setMessages([]);
       setInputValue('');
       setCurrentStep('intro');
-      setDraftData(null);
+      setDraftData({});
       setGeneratedCard(null);
       setCopiedField(null);
       
@@ -89,6 +113,34 @@ const LLMDialog: React.FC<LLMDialogProps> = ({ isVisible, onClose, methods, onCa
     return stepMessages[Math.floor(Math.random() * stepMessages.length)];
   };
 
+  const parseDraftFromResponse = (response: string): Partial<{
+    protagonist: string;
+    event: string;
+    coreProblem: string;
+    solution: string;
+    result: string;
+    insight: string;
+  }> => {
+    const draft: any = {};
+    
+    // 解析案例草稿格式 - 使用更宽松的正则
+    const protagonistMatch = response.match(/\*\*主角:\*\*([\s\S]*?)(?=\*)/);
+    const eventMatch = response.match(/\*\*事件:\*\*([\s\S]*?)(?=\*)/);
+    const coreProblemMatch = response.match(/\*\*核心问题\/感受:\*\*([\s\S]*?)(?=\*)/);
+    const solutionMatch = response.match(/\*\*解决方案 \(或尝试\):\*\*([\s\S]*?)(?=\*)/);
+    const resultMatch = response.match(/\*\*最终结果:\*\*([\s\S]*?)(?=\*)/);
+    const insightMatch = response.match(/\*\*核心启发 \(或疑问\):\*\*([\s\S]*?)(?=\*)/);
+    
+    if (protagonistMatch) draft.protagonist = protagonistMatch[1].trim();
+    if (eventMatch) draft.event = eventMatch[1].trim();
+    if (coreProblemMatch) draft.coreProblem = coreProblemMatch[1].trim();
+    if (solutionMatch) draft.solution = solutionMatch[1].trim();
+    if (resultMatch) draft.result = resultMatch[1].trim();
+    if (insightMatch) draft.insight = insightMatch[1].trim();
+    
+    return draft;
+  };
+
   const handleSend = async () => {
     if (!inputValue.trim() || isLoading) return;
 
@@ -111,10 +163,18 @@ const LLMDialog: React.FC<LLMDialogProps> = ({ isVisible, onClose, methods, onCa
         }
         setIsLoading(false);
       } else if (currentStep === 'question1') {
-        // 处理第一个问题的回答
-        setDraftData(prev => ({ ...prev, question1: userInput }));
+        // 保存第一个问题的回答
+        const newDraft = { ...draftData, question1: userInput };
+        
         const result = await callLLM('question1', userInput);
         if (result) {
+          // 尝试从回答中解析草稿信息
+          const parsed = parseDraftFromResponse(result.response);
+          if (parsed.protagonist) {
+            Object.assign(newDraft, parsed);
+          }
+          
+          setDraftData(newDraft);
           setCurrentStep('question2');
           addMessage(result.response, 'assistant');
         } else {
@@ -122,10 +182,18 @@ const LLMDialog: React.FC<LLMDialogProps> = ({ isVisible, onClose, methods, onCa
         }
         setIsLoading(false);
       } else if (currentStep === 'question2') {
-        // 处理第二个问题的回答
-        setDraftData(prev => ({ ...prev, question2: userInput }));
+        // 保存第二个问题的回答
+        const newDraft = { ...draftData, question2: userInput };
+        
         const result = await callLLM('question1', userInput);
         if (result) {
+          // 尝试从回答中解析更多草稿信息
+          const parsed = parseDraftFromResponse(result.response);
+          if (parsed.coreProblem || parsed.solution) {
+            Object.assign(newDraft, parsed);
+          }
+          
+          setDraftData(newDraft);
           setCurrentStep('question3');
           addMessage(result.response, 'assistant');
         } else {
@@ -133,18 +201,29 @@ const LLMDialog: React.FC<LLMDialogProps> = ({ isVisible, onClose, methods, onCa
         }
         setIsLoading(false);
       } else if (currentStep === 'question3') {
-        // 处理第三个问题的回答，开始生成卡片
-        setDraftData(prev => ({ ...prev, question3: userInput }));
+        // 保存第三个问题的回答
+        const newDraft = { ...draftData, question3: userInput };
+        
+        const questionResult = await callLLM('question1', userInput);
+        if (questionResult) {
+          // 尝试从回答中解析剩余草稿信息
+          const parsed = parseDraftFromResponse(questionResult.response);
+          if (parsed.result || parsed.insight) {
+            Object.assign(newDraft, parsed);
+          }
+        }
+        
+        setDraftData(newDraft);
         setCurrentStep('processing');
         setLoadingMessage(getLoadingMessage('processing'));
         
         addMessage('完美！所有核心信息都抓到了！👍 我正在把这些笔记整理成一份漂亮的锦囊...', 'assistant');
         
         // 调用LLM生成卡片内容
-        const result = await callLLM('generate_card', '', draftData);
-        if (result) {
+        const cardResult = await callLLM('generate_card', '', newDraft);
+        if (cardResult) {
           // 解析LLM返回的卡片内容
-          const card = parseGeneratedCard(result.response);
+          const card = parseGeneratedCard(cardResult.response);
           setGeneratedCard(card);
           setCurrentStep('result');
           addMessage('育儿锦囊已生成！请查看下面的内容，您可以选择保存到对应的方法中。', 'assistant');
@@ -292,16 +371,16 @@ const LLMDialog: React.FC<LLMDialogProps> = ({ isVisible, onClose, methods, onCa
     // 找到对应的方法
     const method = methods.find(m => m.name === generatedCard.category);
     if (!method) {
-      alert('未找到对应的方法分类');
+      showToast('未找到对应的方法分类', 'error');
       return;
     }
 
-    const caseData = {
+    const caseData: Omit<Case, 'id' | 'created_at'> = {
       method_id: method.id,
       name: generatedCard.role_name,
       summary: generatedCard.story_summary,
       card_data: {
-        theme: [method.color, method.color],
+        theme: [method.color, method.color] as [string, string],
         icon_url: method.icon_url,
         front_title: generatedCard.front_title,
         see_why: generatedCard.see_why,
@@ -314,23 +393,27 @@ const LLMDialog: React.FC<LLMDialogProps> = ({ isVisible, onClose, methods, onCa
     try {
       const result = await createCase(caseData);
       if (result) {
-        alert('卡片已成功保存！');
+        showToast('卡片已成功保存到 ' + generatedCard.category + '！', 'success');
         onCaseCreated?.();
-        onClose();
+        setTimeout(() => {
+          onClose();
+        }, 1000);
       } else {
-        alert('保存失败，请重试');
+        showToast('保存失败，请重试', 'error');
       }
     } catch (error) {
       console.error('Error saving case:', error);
-      alert('保存失败，请重试');
+      showToast('保存失败，请重试', 'error');
     }
   };
 
   if (!isVisible) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 backdrop-blur-sm">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl h-[80vh] flex flex-col">
+    <>
+      <ToastContainer toasts={toasts} onClose={removeToast} />
+      <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 backdrop-blur-sm">
+        <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl h-[80vh] flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
           <div className="flex items-center space-x-3">
@@ -449,7 +532,7 @@ const LLMDialog: React.FC<LLMDialogProps> = ({ isVisible, onClose, methods, onCa
                     setGeneratedCard(null);
                     setCurrentStep('intro');
                     setMessages([]);
-                    setDraftData(null);
+                    setDraftData({});
                   }}
                   className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition-colors"
                 >
@@ -485,8 +568,9 @@ const LLMDialog: React.FC<LLMDialogProps> = ({ isVisible, onClose, methods, onCa
             </div>
           </div>
         )}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

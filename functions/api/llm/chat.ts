@@ -167,13 +167,21 @@ AI 结束对话:
 
     } else if (step === 'generate_card') {
       // 第二个提示词：育儿锦囊首席内容官
+      // 优先使用结构化的草稿数据，如果没有则使用原始回答
+      const protagonist = draftData.protagonist || draftData.question1 || '';
+      const event = draftData.event || draftData.question1 || '';
+      const coreProblem = draftData.coreProblem || draftData.question2 || '';
+      const solution = draftData.solution || draftData.question2 || '';
+      const result = draftData.result || draftData.question3 || '';
+      const insight = draftData.insight || draftData.question3 || '';
+      
       const draftText = `**案例草稿**
-* **主角:** ${draftData.question1}
-* **事件:** ${draftData.question1}
-* **核心问题/感受:** ${draftData.question2}
-* **解决方案 (或尝试):** ${draftData.question2}
-* **最终结果:** ${draftData.question3}
-* **核心启发 (或疑问):** ${draftData.question3}`
+* **主角:** ${protagonist}
+* **事件:** ${event}
+* **核心问题/感受:** ${coreProblem}
+* **解决方案 (或尝试):** ${solution}
+* **最终结果:** ${result}
+* **核心启发 (或疑问):** ${insight}`
 
       const prompt2 = `# 角色： "育儿锦囊"首席内容官
 
