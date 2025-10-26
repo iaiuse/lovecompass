@@ -145,6 +145,50 @@ export async function deleteCase(id: string): Promise<boolean> {
   return result.data?.success || false
 }
 
+// 创建方法
+export async function createMethod(methodData: Omit<Method, 'id' | 'created_at'>): Promise<Method | null> {
+  const result = await apiRequest<Method>('/methods', {
+    method: 'POST',
+    body: JSON.stringify(methodData),
+  })
+  
+  if (result.error) {
+    console.error('Error creating method:', result.error)
+    return null
+  }
+  
+  return result.data
+}
+
+// 更新方法
+export async function updateMethod(id: string, methodData: Partial<Omit<Method, 'id' | 'created_at'>>): Promise<Method | null> {
+  const result = await apiRequest<Method>(`/methods/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(methodData),
+  })
+  
+  if (result.error) {
+    console.error('Error updating method:', result.error)
+    return null
+  }
+  
+  return result.data
+}
+
+// 删除方法
+export async function deleteMethod(id: string): Promise<boolean> {
+  const result = await apiRequest<{ success: boolean }>(`/methods/${id}`, {
+    method: 'DELETE',
+  })
+  
+  if (result.error) {
+    console.error('Error deleting method:', result.error)
+    return false
+  }
+  
+  return result.data?.success || false
+}
+
 // 健康检查
 export async function healthCheck(): Promise<boolean> {
   const result = await apiRequest<{ status: string }>('/health')

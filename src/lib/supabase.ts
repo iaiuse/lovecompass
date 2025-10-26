@@ -5,6 +5,8 @@ export interface User {
   id: string
   email: string
   name?: string
+  avatar_url?: string
+  display_name?: string
 }
 
 // 认证状态管理
