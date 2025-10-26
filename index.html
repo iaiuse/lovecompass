@@ -1,10 +1,29 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>育儿锦囊 V3.2 - 深度探索轮盘</title>
+    <title>育儿锦囊</title>
+    <script>
+      // 处理 OAuth 回调
+      if (window.location.pathname === '/auth/callback') {
+        const params = new URLSearchParams(window.location.search)
+        const code = params.get('code')
+        
+        if (code) {
+          // 将 code 保存到 localStorage，然后关闭窗口或重定向
+          localStorage.setItem('oauth_code', code)
+          // 尝试关闭窗口（如果是弹窗）
+          if (window.opener) {
+            window.close()
+          } else {
+            // 否则重定向回主页面
+            window.location.href = '/'
+          }
+        }
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

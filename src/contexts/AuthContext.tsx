@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import { authManager, User } from '../lib/supabase'
 import { login, register, logout, loginWithGoogle } from '../lib/auth'
-import { supabase } from '../lib/supabaseClient'
 
 interface AuthContextType {
   user: User | null
@@ -32,28 +31,43 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    // 检查是否有 OAuth 回调的 code
+    const handleOAuthCallback = async () => {
+      const oauthCode = localStorage.getItem('oauth_code')
+      if (oauthCode) {
+        try {
+          // 调用后端 API 交换 code 获取 token
+          const response = await fetch('/api/auth/callback', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ code: oauthCode }),
+          })
+
+          const result = await response.json()
+
+          if (result.user && result.token) {
+            authManager.setAuth(result.user, result.token)
+            setUser(result.user)
+          }
+
+          // 清除 code
+          localStorage.removeItem('oauth_code')
+        } catch (error) {
+          console.error('OAuth callback error:', error)
+        }
+      }
+    }
+
     // 获取初始用户
     const getInitialUser = async () => {
+      await handleOAuthCallback()
+      
       try {
-        // 首先检查 Supabase session
-        const { data: { session } } = await supabase.auth.getSession()
-        
-        if (session?.user) {
-          // 如果有 Supabase session，转换为 User 类型并保存
-          const supabaseUser: User = {
-            id: session.user.id,
-            email: session.user.email || '',
-            name: session.user.user_metadata?.name || session.user.user_metadata?.full_name || undefined
-          }
-          setUser(supabaseUser)
-          // 保存到 authManager
-          authManager.setAuth(supabaseUser, session.access_token)
-        } else {
-          // 否则尝试从本地存储获取
-          const currentUser = authManager.getCurrentUser()
-          setUser(currentUser)
-        }
-        
+        const currentUser = authManager.getCurrentUser()
+        console.log('Initial user:', currentUser)
+        setUser(currentUser)
         setLoading(false)
       } catch (error) {
         console.error('Error getting initial user:', error)
@@ -62,29 +76,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
 
     getInitialUser()
-
-    // 监听 Supabase 认证状态变化
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        console.log('Auth state change:', event, session)
-        
-        if (session?.user) {
-          const supabaseUser: User = {
-            id: session.user.id,
-            email: session.user.email || '',
-            name: session.user.user_metadata?.name || session.user.user_metadata?.full_name || undefined
-          }
-          setUser(supabaseUser)
-          authManager.setAuth(supabaseUser, session.access_token)
-        } else {
-          setUser(null)
-          authManager.clearAuth()
-        }
-        setLoading(false)
-      }
-    )
-
-    return () => subscription.unsubscribe()
   }, [])
 
   const signInWithGoogle = async () => {
