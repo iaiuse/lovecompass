@@ -70,7 +70,7 @@ export const onRequest = async (context: any) => {
     }
 
     // 解析请求体
-    const { step, userInput, draftData } = await request.json()
+    const { step, userInput, draftData, conversationHistory } = await request.json()
 
     let response = ''
 
@@ -82,17 +82,18 @@ export const onRequest = async (context: any) => {
 
 你是一个温暖、高效的AI助手，专门帮助刚刚处理完突发事件的一线老师。你的首要任务是"速度"，在老师的记忆和情绪最鲜活的"黄金5分钟"内，通过**3类问题**，捕捉到事件的核心要素。
 
-## 交互原则：
+## 交互原则（严格执行）：
 
-- **三类问题：** 你必须完成3类问题的探索，每类可以有多轮追问以获取完整信息。
-  - 第一类：人物与事件（Who + What）
-  - 第二类：感受与尝试（Feeling + Attempt）
-  - 第三类：结果与反思（Result + Reflection）
+- **三类问题限制：** 每类问题最多问3个问题，必须精炼高效。
+  - 第一类：人物与事件（Who + What）- 最多3个问题
+  - 第二类：感受与尝试（Feeling + Attempt）- 最多3个问题
+  - 第三类：结果与反思（Result + Reflection）- 最多3个问题
 - **主动引导：** 永远是你来提问，老师只需要回答。
 - **高效同理心：** 用语简短、友好、充满共情，使用表情符号，让老师感到被支持，而不是在"加班"。
 - **聚焦事实：** 你只负责记录"发生了什么"，不强迫老师在当下进行深度分析。
-- **适应性提问：** 允许并接纳"未解决"的案例。提问时使用开放性词语（如"结果如何（无论好坏）"、"有什么心得或疑问吗？"），不预设"成功"的立场。在每类问题之后给出简单的选项，方便老师回答。
-- **深入追问：** 如果老师的回答不够详细，你可以在同一类问题内追问更多细节，直到获取足够信息后再进入下一类问题。
+- **适应性提问：** 允许并接纳"未解决"的案例。提问时使用开放性词语（如"结果如何（无论好坏）"、"有什么心得或疑问吗？"），不预设"成功"的立场。
+- **精炼提问：** 每个问题都要精简到核心，避免冗长。尽量一次性问清楚，不要重复提问已有信息。
+- **阅读上下文：** 每次提问前，仔细阅读之前的对话历史，避免重复提问已经回答过的问题。
 
 ## **【三类问题交互流程】**
 
@@ -157,10 +158,36 @@ AI 结束对话:
 - 第二类问题完成后，进入第三类问题（结果与反思）
 - 第三类问题完成后，输出案例草稿
 
-注意：
-1. 每类问题内可以有多轮追问以获取完整信息
-2. 只有当一类问题获取到足够信息后，才能进入下一类问题
-3. 必须完成三类问题的探索，不允许跳过任何一类直接输出案例草稿`
+重要提示：
+1. 每类问题最多问3个问题，必须精炼高效
+2. 优先问核心信息，次要细节可以适当省略
+3. 快速判断：如果用户在回答中已经包含了该类的核心信息，可以提前结束该类问题
+4. 记住：目标是快速抓取核心要点，不是获取所有细节
+5. 必须完成三类问题的探索，但每类都要尽量精简`
+
+      // 构建消息数组：system prompt + 对话历史 + 当前用户输入
+      const messages: Array<{role: string, content: string}> = [
+        {
+          role: 'system',
+          content: prompt1
+        }
+      ];
+      
+      // 如果有对话历史，添加到消息数组
+      if (conversationHistory && Array.isArray(conversationHistory)) {
+        conversationHistory.forEach((msg: {role: string, content: string}) => {
+          messages.push({
+            role: msg.role,
+            content: msg.content
+          });
+        });
+      }
+      
+      // 添加当前用户输入
+      messages.push({
+        role: 'user',
+        content: userInput
+      });
 
       const llmResponse = await fetch(`${llmBaseUrl}/chat/completions`, {
         method: 'POST',
@@ -170,16 +197,7 @@ AI 结束对话:
         },
         body: JSON.stringify({
           model: llmModel,
-          messages: [
-            {
-              role: 'system',
-              content: prompt1
-            },
-            {
-              role: 'user',
-              content: userInput
-            }
-          ],
+          messages: messages,
           max_tokens: 500,
           temperature: 0.7
         })

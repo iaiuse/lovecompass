@@ -197,10 +197,10 @@ export async function healthCheck(): Promise<boolean> {
 }
 
 // LLM对话接口
-export async function callLLM(step: string, userInput: string, draftData?: any): Promise<{ response: string } | null> {
+export async function callLLM(step: string, userInput: string, draftData?: any, conversationHistory?: Array<{ role: string; content: string }>): Promise<{ response: string } | null> {
   const result = await apiRequest<{ response: string }>('/llm/chat', {
     method: 'POST',
-    body: JSON.stringify({ step, userInput, draftData }),
+    body: JSON.stringify({ step, userInput, draftData, conversationHistory }),
   })
   
   if (result.error) {

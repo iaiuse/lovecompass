@@ -152,9 +152,15 @@ const LLMDialog: React.FC<LLMDialogProps> = ({ isVisible, onClose, methods, onCa
     setLoadingMessage(getLoadingMessage(currentStep));
 
     try {
+      // 构建对话历史
+      const conversationHistory = messages.map(msg => ({
+        role: msg.role,
+        content: msg.content
+      }));
+
       if (currentStep === 'intro') {
         // 用户确认开始，调用LLM获取第一个问题
-        const result = await callLLM('question1', userInput);
+        const result = await callLLM('question1', userInput, draftData, conversationHistory);
         if (result) {
           setCurrentStep('question1');
           addMessage(result.response, 'assistant');
@@ -166,7 +172,7 @@ const LLMDialog: React.FC<LLMDialogProps> = ({ isVisible, onClose, methods, onCa
         // 保存第一个问题的回答
         const newDraft = { ...draftData, question1: userInput };
         
-        const result = await callLLM('question1', userInput);
+        const result = await callLLM('question1', userInput, draftData, conversationHistory);
         if (result) {
           // 尝试从回答中解析草稿信息
           const parsed = parseDraftFromResponse(result.response);
@@ -185,7 +191,7 @@ const LLMDialog: React.FC<LLMDialogProps> = ({ isVisible, onClose, methods, onCa
         // 保存第二个问题的回答
         const newDraft = { ...draftData, question2: userInput };
         
-        const result = await callLLM('question1', userInput);
+        const result = await callLLM('question1', userInput, draftData, conversationHistory);
         if (result) {
           // 尝试从回答中解析更多草稿信息
           const parsed = parseDraftFromResponse(result.response);
@@ -204,7 +210,7 @@ const LLMDialog: React.FC<LLMDialogProps> = ({ isVisible, onClose, methods, onCa
         // 保存第三个问题的回答
         const newDraft = { ...draftData, question3: userInput };
         
-        const questionResult = await callLLM('question1', userInput);
+        const questionResult = await callLLM('question1', userInput, draftData, conversationHistory);
         if (questionResult) {
           // 尝试从回答中解析剩余草稿信息
           const parsed = parseDraftFromResponse(questionResult.response);
@@ -220,7 +226,7 @@ const LLMDialog: React.FC<LLMDialogProps> = ({ isVisible, onClose, methods, onCa
         addMessage('完美！所有核心信息都抓到了！👍 我正在把这些笔记整理成一份漂亮的锦囊...', 'assistant');
         
         // 调用LLM生成卡片内容
-        const cardResult = await callLLM('generate_card', '', newDraft);
+        const cardResult = await callLLM('generate_card', '', newDraft, conversationHistory);
         if (cardResult) {
           // 解析LLM返回的卡片内容
           const card = parseGeneratedCard(cardResult.response);
