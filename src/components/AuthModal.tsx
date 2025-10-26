@@ -58,6 +58,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isVisible, onClose }) => {
       setError(error.message)
       setLoading(false)
     }
+    // 如果成功，会通过 AuthContext 的状态更新自动关闭模态框
   }
 
   const handleResetPassword = async () => {

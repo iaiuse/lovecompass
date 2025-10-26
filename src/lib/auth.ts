@@ -1,5 +1,6 @@
 // 认证相关函数 - 通过 API 进行认证
 import { authManager, User } from './supabase'
+import { supabase } from './supabaseClient'
 
 // 登录函数 - 通过 API 进行认证
 export async function login(email: string, password: string): Promise<{ success: boolean; error?: string }> {
@@ -82,6 +83,30 @@ export async function logout(): Promise<void> {
 // 获取当前用户
 export function getCurrentUser(): User | null {
   return authManager.getCurrentUser()
+}
+
+// Google OAuth 登录
+export async function loginWithGoogle(): Promise<{ success: boolean; error?: string }> {
+  try {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`
+      }
+    })
+
+    if (error) {
+      return { success: false, error: error.message }
+    }
+
+    return { success: true }
+  } catch (error) {
+    console.error('Google OAuth error:', error)
+    return { 
+      success: false, 
+      error: error instanceof Error ? error.message : 'OAuth failed' 
+    }
+  }
 }
 
 // 检查是否已认证

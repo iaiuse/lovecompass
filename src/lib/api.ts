@@ -9,12 +9,22 @@ export interface Method {
   created_at: string
 }
 
+export interface CaseData {
+  theme: [string, string]
+  icon_url: string
+  front_title: string
+  see_why: string
+  solution_list: string
+  the_change: string
+  wisdom_quote: string
+}
+
 export interface Case {
   id: string
   method_id: string
   name: string
   summary: string
-  card_data: any
+  card_data: CaseData
   created_at: string
 }
 

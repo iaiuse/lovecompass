@@ -250,3 +250,59 @@ BEGIN
   ORDER BY c.created_at;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- ==========================================
+-- Google OAuth 支持
+-- ==========================================
+
+-- 更新用户配置文件处理函数，支持 Google OAuth 用户
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO public.user_profiles (user_id, display_name, avatar_url)
+  VALUES (
+    NEW.id,
+    COALESCE(
+      NEW.raw_user_meta_data->>'display_name',
+      NEW.raw_user_meta_data->>'full_name',
+      NEW.raw_user_meta_data->>'name',
+      split_part(NEW.email, '@', 1)
+    ),
+    NEW.raw_user_meta_data->>'avatar_url'
+  );
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- 创建或更新用户配置文件的函数（用于 OAuth 用户）
+CREATE OR REPLACE FUNCTION public.sync_user_profile()
+RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO public.user_profiles (user_id, display_name, avatar_url)
+  VALUES (
+    NEW.id,
+    COALESCE(
+      NEW.raw_user_meta_data->>'display_name',
+      NEW.raw_user_meta_data->>'full_name',
+      NEW.raw_user_meta_data->>'name',
+      split_part(NEW.email, '@', 1)
+    ),
+    NEW.raw_user_meta_data->>'avatar_url'
+  )
+  ON CONFLICT (user_id) 
+  DO UPDATE SET
+    display_name = EXCLUDED.display_name,
+    avatar_url = COALESCE(EXCLUDED.avatar_url, user_profiles.avatar_url),
+    updated_at = NOW();
+  
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- 创建触发器，当用户信息更新时同步配置文件（用于 OAuth 登录后更新信息）
+CREATE TRIGGER sync_user_profile_on_update
+  AFTER INSERT OR UPDATE OF raw_user_meta_data ON auth.users
+  FOR EACH ROW EXECUTE FUNCTION public.sync_user_profile();
+
+-- 添加提供者信息到用户元数据（如果需要记录用户使用的认证方式）
+COMMENT ON COLUMN auth.users.raw_user_meta_data IS 'Contains user metadata including OAuth provider information and profile data';

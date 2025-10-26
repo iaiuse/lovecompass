@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getMethods, getCasesByMethodId, createCase, updateCase, deleteCase, Method, Case } from './lib/api';
-import { CaseData } from './lib/supabase';
+import { getMethods, getCasesByMethodId, createCase, updateCase, deleteCase, Method, Case, CaseData } from './lib/api';
 import { Plus, CreditCard as Edit, Trash2, LogIn, LogOut, User } from 'lucide-react';
 import ResponsiveWheel from './components/ResponsiveWheel';
 import MobileGrid from './components/MobileGrid';
@@ -154,6 +153,7 @@ function App() {
       setCases([]);
       setSelectedMethod(null);
       setSelectedCase(null);
+      setLoading(false);
     }
   }, [user]);
 
