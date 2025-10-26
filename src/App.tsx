@@ -48,7 +48,7 @@ const FlippableCard: React.FC<{
   onFlip: () => void;
 }> = ({ cardData, isFlipped, onFlip }) => {
   return (
-    <div className="w-96 aspect-[2/3] perspective-1200 mx-auto">
+    <div className="w-80 sm:w-96 md:w-[28rem] lg:w-[32rem] xl:w-[36rem] aspect-[2/3] perspective-1200 mx-auto">
       <div 
         className={`w-full h-full relative transform-style-preserve-3d transition-transform duration-800 cursor-pointer ${
           isFlipped ? 'rotate-y-180' : ''
@@ -72,7 +72,7 @@ const FlippableCard: React.FC<{
             alt="Card icon"
             className="w-20 h-20 rounded-full object-cover"
           />
-          <h2 className="text-2xl font-bold text-center mt-5 leading-tight text-gray-800">
+          <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-center mt-5 leading-tight text-gray-800">
             {cardData.front_title}
           </h2>
         </div>
@@ -95,11 +95,11 @@ const FlippableCard: React.FC<{
           </div>
           
           <div className="flex-grow overflow-y-auto pr-4 -mr-4 relative z-10 card-content">
-            <h4 className="text-base font-bold mb-2 pb-1 border-b border-white border-opacity-30 mt-0">
+            <h4 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold mb-2 pb-1 border-b border-white border-opacity-30 mt-0">
               看见"为什么"
             </h4>
             <div 
-              className="text-xs leading-relaxed mb-4 break-words"
+              className="text-xs sm:text-sm md:text-base lg:text-lg leading-relaxed mb-4 break-words"
               dangerouslySetInnerHTML={{ __html: cardData.see_why }}
               style={{
                 wordBreak: 'break-word',
@@ -107,11 +107,11 @@ const FlippableCard: React.FC<{
               }}
             />
             
-            <h4 className="text-base font-bold mb-2 pb-1 border-b border-white border-opacity-30">
+            <h4 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold mb-2 pb-1 border-b border-white border-opacity-30">
               解决方案
             </h4>
             <div 
-              className="text-xs leading-relaxed mb-4 break-words"
+              className="text-xs sm:text-sm md:text-base lg:text-lg leading-relaxed mb-4 break-words"
               style={{
                 wordBreak: 'break-word',
                 overflowWrap: 'break-word'
@@ -120,18 +120,16 @@ const FlippableCard: React.FC<{
               {cardData.solution_list && (
                 <div 
                   dangerouslySetInnerHTML={{ __html: cardData.solution_list }}
-                  style={{
-                    fontSize: '0.75rem'
-                  }}
+                  className="text-xs sm:text-sm md:text-base lg:text-lg"
                 />
               )}
             </div>
             
-            <h4 className="text-base font-bold mb-2 pb-1 border-b border-white border-opacity-30">
+            <h4 className="text-sm sm:text-base md:text-lg lg:text-xl font-bold mb-2 pb-1 border-b border-white border-opacity-30">
               神奇变化 ✨
             </h4>
             <div 
-              className="text-xs leading-relaxed mb-3 break-words"
+              className="text-xs sm:text-sm md:text-base lg:text-lg leading-relaxed mb-3 break-words"
               dangerouslySetInnerHTML={{ __html: cardData.the_change }}
               style={{
                 wordBreak: 'break-word',
@@ -141,7 +139,7 @@ const FlippableCard: React.FC<{
           </div>
           
           <div className="text-center italic pt-3 mt-2 border-t border-white border-opacity-20 flex-shrink-0 relative z-10">
-            <p className={`text-xs m-0 before:content-['"'] after:content-['"'] before:text-xl after:text-xl before:text-yellow-300 after:text-yellow-300 leading-tight`}>
+            <p className={`text-xs sm:text-sm md:text-base lg:text-lg m-0 before:content-['"'] after:content-['"'] before:text-xl after:text-xl before:text-yellow-300 after:text-yellow-300 leading-tight`}>
               {cardData.wisdom_quote.replace(/"/g, '')}
             </p>
           </div>
@@ -590,7 +588,7 @@ function App() {
         onClose={closeModals}
         className="bg-black/40"
       >
-        <div className="w-full max-w-sm sm:max-w-md px-4">
+        <div className="w-full max-w-sm sm:max-w-md md:max-w-2xl lg:max-w-4xl xl:max-w-5xl px-4">
           {selectedCase && (
             <FlippableCard
               cardData={selectedCase}
