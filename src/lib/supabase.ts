@@ -76,7 +76,13 @@ export const supabase = {
       const token = authManager.getToken()
       return { 
         data: { 
-          session: user && token ? { user, access_token: token } : null 
+          session: user && token ? { 
+            user, 
+            access_token: token,
+            refresh_token: token,
+            expires_at: Date.now() + 3600000, // 1小时后过期
+            token_type: 'bearer'
+          } : null 
         }, 
         error: null 
       }
