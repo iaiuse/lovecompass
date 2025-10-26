@@ -38,7 +38,7 @@ const ResponsiveWheel: React.FC<ResponsiveWheelProps> = ({ methods, onSectorClic
         {/* Center Hub */}
         <div 
           className="wheel-center rounded-full bg-gradient-to-br from-white/95 to-white/90 backdrop-blur-md border-2 lg:border-4 border-white/60 shadow-2xl flex flex-col items-center justify-center p-3 sm:p-4 md:p-5 lg:p-7 z-10 relative transform hover:scale-105 transition-transform duration-300"
-          style={{ width: '150px', height: '150px' }}
+          style={{ width: '200px', height: '220px' }}
         >
           {/* 中心装饰环 */}
           <div className="absolute inset-0 rounded-full bg-gradient-to-r from-pink-400/20 via-purple-400/20 to-indigo-400/20 animate-spin-slow"></div>
@@ -77,8 +77,8 @@ const ResponsiveWheel: React.FC<ResponsiveWheelProps> = ({ methods, onSectorClic
                 left: '50%',
                 top: '50%',
                 transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`,
-                width: radius < 200 ? '80px' : radius < 300 ? '100px' : '120px',
-                height: radius < 200 ? '80px' : radius < 300 ? '100px' : '120px',
+                width: radius < 200 ? '80px' : radius < 300 ? '120px' : '150px',
+                height: radius < 200 ? '80px' : radius < 300 ? '120px' : '150px',
               }}
               onClick={() => onSectorClick(method)}
             >
