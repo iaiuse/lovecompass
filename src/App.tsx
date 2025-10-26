@@ -48,7 +48,7 @@ const FlippableCard: React.FC<{
   onFlip: () => void;
 }> = ({ cardData, isFlipped, onFlip }) => {
   return (
-    <div className="w-80 aspect-[2/3] perspective-1200 mx-auto">
+    <div className="w-96 aspect-[2/3] perspective-1200 mx-auto">
       <div 
         className={`w-full h-full relative transform-style-preserve-3d transition-transform duration-800 cursor-pointer ${
           isFlipped ? 'rotate-y-180' : ''
@@ -590,7 +590,7 @@ function App() {
         onClose={closeModals}
         className="bg-black/40"
       >
-        <div className="w-full max-w-xs sm:max-w-sm px-4">
+        <div className="w-full max-w-sm sm:max-w-md px-4">
           {selectedCase && (
             <FlippableCard
               cardData={selectedCase}
