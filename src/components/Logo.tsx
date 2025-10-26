@@ -3,7 +3,7 @@ import React from 'react';
 interface LogoProps {
   size?: number;
   className?: string;
-  variant?: 'default' | 'simple' | 'minimal';
+  variant?: 'default' | 'simple' | 'minimal' | 'unified';
 }
 
 const Logo: React.FC<LogoProps> = ({ 
@@ -76,6 +76,95 @@ const Logo: React.FC<LogoProps> = ({
             fontFamily="system-ui, -apple-system, sans-serif"
           >
             育
+          </text>
+        </svg>
+      </div>
+    );
+  }
+
+  if (variant === 'unified') {
+    return (
+      <div className={`flex flex-col items-center justify-center ${className}`}>
+        <svg
+          width={size * 1.2}
+          height={size * 1.5}
+          viewBox="0 0 120 150"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <defs>
+            <linearGradient id="unifiedIconGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#ec4899" />
+              <stop offset="50%" stopColor="#a855f7" />
+              <stop offset="100%" stopColor="#3b82f6" />
+            </linearGradient>
+            <linearGradient id="titleGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#ec4899" />
+              <stop offset="100%" stopColor="#3b82f6" />
+            </linearGradient>
+          </defs>
+          
+          {/* 图标部分 */}
+          <g transform="translate(60, 40)">
+            <circle cx="0" cy="0" r="30" fill="url(#unifiedIconGradient)" />
+            
+            {/* 锦囊主体 */}
+            <g transform="translate(0, 8)">
+              <ellipse cx="0" cy="8" rx="14" ry="16" fill="white" fillOpacity="0.9" />
+              <path
+                d="M-12, -6 Q-12, -11 0, -11 Q12, -11 12, -6 L12, -1 Q12, 1 0, 1 Q-12, 1 -12, -1 Z"
+                fill="#fbbf24"
+              />
+              <path
+                d="M-10, -11 Q-10, -18 -5, -18 Q0, -18 5, -18 Q10, -18 10, -11"
+                fill="none"
+                stroke="#fbbf24"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+              />
+              <path
+                d="M0, 12 C0, 12 -6, 6 -6, 1 C-6, -1 -3, -1 0, 1 C3, -1 6, -1 6, 1 C6, 6 0, 12 0, 12 Z"
+                fill="#ec4899"
+                fillOpacity="0.8"
+              />
+            </g>
+          </g>
+          
+          {/* 标题文字 */}
+          <text
+            x="60"
+            y="100"
+            fontSize="18"
+            fontWeight="bold"
+            fill="url(#titleGradient)"
+            fontFamily="system-ui, -apple-system, sans-serif"
+            textAnchor="middle"
+          >
+            育儿锦囊
+          </text>
+          
+          {/* 副标题 */}
+          <text
+            x="60"
+            y="118"
+            fontSize="11"
+            fill="#64748b"
+            fontFamily="system-ui, -apple-system, sans-serif"
+            textAnchor="middle"
+          >
+            我能做什么？
+          </text>
+          
+          {/* 说明文字 */}
+          <text
+            x="60"
+            y="135"
+            fontSize="9"
+            fill="#94a3b8"
+            fontFamily="system-ui, -apple-system, sans-serif"
+            textAnchor="middle"
+          >
+            试试以下的2-3个方法
           </text>
         </svg>
       </div>

@@ -10,13 +10,13 @@ interface ResponsiveWheelProps {
 const ResponsiveWheel: React.FC<ResponsiveWheelProps> = ({ methods, onSectorClick }) => {
   // 根据屏幕尺寸计算半径
   const getRadius = () => {
-    if (typeof window === 'undefined') return 90;
+    if (typeof window === 'undefined') return 110;
     const width = window.innerWidth;
-    if (width < 640) return 90;   // 移动端
-    if (width < 768) return 200;  // 平板
-    if (width < 1024) return 250; // 桌面
-    if (width < 1280) return 300; // 大屏
-    return 350; // 超大屏
+    if (width < 640) return 110;   // 移动端 - 增加半径
+    if (width < 768) return 220;   // 平板 - 增加半径
+    if (width < 1024) return 280;  // 桌面 - 增加半径
+    if (width < 1280) return 330;  // 大屏 - 增加半径
+    return 380; // 超大屏 - 增加半径
   };
 
   const radius = getRadius();
@@ -74,8 +74,8 @@ const ResponsiveWheel: React.FC<ResponsiveWheelProps> = ({ methods, onSectorClic
                 left: '50%',
                 top: '50%',
                 transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`,
-                width: radius < 200 ? '60px' : radius < 300 ? '80px' : '100px',
-                height: radius < 200 ? '60px' : radius < 300 ? '80px' : '100px',
+                width: radius < 200 ? '70px' : radius < 300 ? '90px' : '110px',
+                height: radius < 200 ? '70px' : radius < 300 ? '90px' : '110px',
               }}
               onClick={() => onSectorClick(method)}
             >
@@ -87,8 +87,8 @@ const ResponsiveWheel: React.FC<ResponsiveWheelProps> = ({ methods, onSectorClic
                   className="rounded-xl lg:rounded-2xl mb-1 sm:mb-2 flex items-center justify-center shadow-lg transition-all duration-300 group-hover:scale-125 group-hover:rotate-12"
                   style={{ 
                     backgroundColor: `${method.color}25`,
-                    width: radius < 200 ? '32px' : radius < 300 ? '40px' : '48px',
-                    height: radius < 200 ? '32px' : radius < 300 ? '40px' : '48px',
+                    width: radius < 200 ? '36px' : radius < 300 ? '44px' : '52px',
+                    height: radius < 200 ? '36px' : radius < 300 ? '44px' : '52px',
                   }}
                 >
                   <img 
@@ -96,8 +96,8 @@ const ResponsiveWheel: React.FC<ResponsiveWheelProps> = ({ methods, onSectorClic
                     alt={method.name}
                     className="rounded-lg lg:rounded-xl object-cover"
                     style={{
-                      width: radius < 200 ? '20px' : radius < 300 ? '24px' : '28px',
-                      height: radius < 200 ? '20px' : radius < 300 ? '24px' : '28px',
+                      width: radius < 200 ? '22px' : radius < 300 ? '26px' : '30px',
+                      height: radius < 200 ? '22px' : radius < 300 ? '26px' : '30px',
                     }}
                   />
                 </div>
@@ -105,7 +105,7 @@ const ResponsiveWheel: React.FC<ResponsiveWheelProps> = ({ methods, onSectorClic
                   className="font-bold text-center leading-tight transition-all duration-300 px-1 group-hover:text-white"
                   style={{ 
                     color: method.color,
-                    fontSize: radius < 200 ? '10px' : radius < 300 ? '12px' : '14px',
+                    fontSize: radius < 200 ? '11px' : radius < 300 ? '13px' : '15px',
                   }}
                 >
                   {method.name}

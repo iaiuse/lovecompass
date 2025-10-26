@@ -94,34 +94,54 @@ const FlippableCard: React.FC<{
             />
           </div>
           
-          <div className="flex-grow overflow-y-auto pr-4 -mr-4">
-            <h4 className="text-lg font-bold mb-2 pb-1 border-b border-white border-opacity-30 mt-0">
+          <div className="flex-grow overflow-y-auto pr-4 -mr-4 relative z-10 card-content">
+            <h4 className="text-base font-bold mb-2 pb-1 border-b border-white border-opacity-30 mt-0">
               看见"为什么"
             </h4>
             <div 
-              className="text-sm leading-relaxed mb-3"
+              className="text-xs leading-relaxed mb-4 break-words"
               dangerouslySetInnerHTML={{ __html: cardData.see_why }}
+              style={{
+                wordBreak: 'break-word',
+                overflowWrap: 'break-word'
+              }}
             />
             
-            <h4 className="text-lg font-bold mb-2 pb-1 border-b border-white border-opacity-30">
+            <h4 className="text-base font-bold mb-2 pb-1 border-b border-white border-opacity-30">
               解决方案
             </h4>
             <div 
-              className="text-sm leading-relaxed mb-3"
-              dangerouslySetInnerHTML={{ __html: cardData.solution_list }}
-            />
+              className="text-xs leading-relaxed mb-4 break-words"
+              style={{
+                wordBreak: 'break-word',
+                overflowWrap: 'break-word'
+              }}
+            >
+              {cardData.solution_list && (
+                <div 
+                  dangerouslySetInnerHTML={{ __html: cardData.solution_list }}
+                  style={{
+                    fontSize: '0.75rem'
+                  }}
+                />
+              )}
+            </div>
             
-            <h4 className="text-lg font-bold mb-2 pb-1 border-b border-white border-opacity-30">
+            <h4 className="text-base font-bold mb-2 pb-1 border-b border-white border-opacity-30">
               神奇变化 ✨
             </h4>
             <div 
-              className="text-sm leading-relaxed mb-3"
+              className="text-xs leading-relaxed mb-3 break-words"
               dangerouslySetInnerHTML={{ __html: cardData.the_change }}
+              style={{
+                wordBreak: 'break-word',
+                overflowWrap: 'break-word'
+              }}
             />
           </div>
           
-          <div className="text-center italic pt-4 mt-4 border-t border-white border-opacity-20 flex-shrink-0">
-            <p className={`text-base m-0 before:content-['"'] after:content-['"'] before:text-2xl after:text-2xl before:text-yellow-300 after:text-yellow-300`}>
+          <div className="text-center italic pt-3 mt-2 border-t border-white border-opacity-20 flex-shrink-0 relative z-10">
+            <p className={`text-xs m-0 before:content-['"'] after:content-['"'] before:text-xl after:text-xl before:text-yellow-300 after:text-yellow-300 leading-tight`}>
               {cardData.wisdom_quote.replace(/"/g, '')}
             </p>
           </div>
