@@ -1,7 +1,7 @@
 // Cloudflare Pages Edge Runtime API - 根据方法ID获取用户案例
 import { createClient } from '@supabase/supabase-js'
 
-export const onRequest: PagesFunction = async (context) => {
+export const onRequest = async (context: any) => {
   const { request, env, params } = context
 
   // CORS headers

@@ -1,5 +1,5 @@
 // Cloudflare Pages Edge Runtime API - 健康检查
-export const onRequest: PagesFunction = async (context) => {
+export const onRequest = async (context: any) => {
   const { request } = context
 
   // CORS headers
