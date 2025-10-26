@@ -31,8 +31,35 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // 检查是否有 OAuth 回调的 code
+    // 检查是否有 OAuth 回调的 token 或 code
     const handleOAuthCallback = async () => {
+      // 首先检查是否有直接的 access_token（Supabase OAuth 直接返回）
+      const accessToken = localStorage.getItem('oauth_access_token')
+      if (accessToken) {
+        try {
+          // 调用后端 API 验证 token 并获取用户信息
+          const response = await fetch('/api/auth/verify', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ token: accessToken }),
+          })
+
+          const result = await response.json()
+
+          if (result.user && result.token) {
+            authManager.setAuth(result.user, result.token)
+            setUser(result.user)
+          }
+
+          localStorage.removeItem('oauth_access_token')
+        } catch (error) {
+          console.error('OAuth token verification error:', error)
+        }
+      }
+      
+      // 如果没有直接的 token，检查是否有 code
       const oauthCode = localStorage.getItem('oauth_code')
       if (oauthCode) {
         try {

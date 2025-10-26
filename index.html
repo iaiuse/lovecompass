@@ -7,12 +7,21 @@
     <title>育儿锦囊</title>
     <script>
       // 处理 OAuth 回调
-      const urlParams = new URLSearchParams(window.location.search)
-      const code = urlParams.get('code')
-      const oauthCallback = urlParams.get('oauth_callback')
+      // Supabase 会在 hash 中返回 access_token
+      const hash = window.location.hash.substring(1) // 去掉开头的 #
+      const params = new URLSearchParams(hash)
+      const accessToken = params.get('access_token')
+      const code = params.get('code')
       
-      if (code) {
-        // 将 code 保存到 localStorage
+      if (accessToken) {
+        // 直接保存 access_token 到 localStorage
+        localStorage.setItem('oauth_access_token', accessToken)
+        console.log('OAuth access token received')
+        
+        // 清除 URL 中的 hash
+        window.history.replaceState({}, document.title, window.location.pathname)
+      } else if (code) {
+        // 如果是 code 而非直接 token，保存 code
         localStorage.setItem('oauth_code', code)
         // 清除 URL 中的参数
         window.history.replaceState({}, document.title, window.location.pathname)
