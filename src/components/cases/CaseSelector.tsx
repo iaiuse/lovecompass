@@ -1,6 +1,6 @@
 import React from 'react';
 import { Plus, CreditCard as Edit, Trash2 } from 'lucide-react';
-import { Method, Case, CaseData } from '../lib/supabase';
+import { Method, Case, CaseData } from '../../lib/supabase';
 
 interface CaseSelectorProps {
   selectedMethod: Method | null;

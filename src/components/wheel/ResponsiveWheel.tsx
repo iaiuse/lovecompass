@@ -1,5 +1,5 @@
 import React from 'react';
-import { Method } from '../lib/supabase';
+import { Method } from '../../lib/supabase';
 import WheelSector from './WheelSector';
 
 interface ResponsiveWheelProps {

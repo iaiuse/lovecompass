@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Plus, Edit, Trash2, Settings, X } from 'lucide-react';
-import { Method, createMethod, updateMethod, deleteMethod } from '../lib/api';
+import { Method, createMethod, updateMethod, deleteMethod } from '../../lib/api';
 import MethodForm from './MethodForm';
 
 interface MethodManagerProps {

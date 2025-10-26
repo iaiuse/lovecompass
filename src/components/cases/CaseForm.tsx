@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { X, Save, Plus } from 'lucide-react';
-import { Method, Case, CaseData } from '../lib/api';
-import LoadingSpinner from './LoadingSpinner';
+import { Method, Case, CaseData } from '../../lib/api';
+import LoadingSpinner from '../ui/LoadingSpinner';
 
 interface CaseFormProps {
   method: Method;

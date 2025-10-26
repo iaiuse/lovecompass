@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
-import { useAuth } from '../contexts/AuthContext'
+import { useAuth } from '../../contexts/AuthContext'
 import { Mail, Lock, Eye, EyeOff, AlertCircle, Loader2 } from 'lucide-react'
-import Logo from './Logo'
+import Logo from '../ui/Logo'
 
 interface AuthModalProps {
   isVisible: boolean

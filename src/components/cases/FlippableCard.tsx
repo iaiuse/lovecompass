@@ -1,5 +1,5 @@
 import React from 'react';
-import { CaseData } from '../lib/supabase';
+import { CaseData } from '../../lib/supabase';
 
 interface FlippableCardProps {
   cardData: CaseData;

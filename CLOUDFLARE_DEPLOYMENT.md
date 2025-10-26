@@ -14,6 +14,7 @@
 | `/api/cases` | POST | 创建新案例 |
 | `/api/cases/[id]` | PUT | 更新案例 |
 | `/api/cases/[id]` | DELETE | 删除案例 |
+| `/api/llm/chat` | POST | LLM对话接口 |
 
 ## 部署步骤
 
@@ -24,6 +25,9 @@
 ```
 SUPABASE_URL=你的_supabase_url
 SUPABASE_ANON_KEY=你的_anon_key
+LLM_API_KEY=你的_llm_api_key
+LLM_BASE_URL=https://api.openai.com/v1
+LLM_MODEL=gpt-4o-mini
 ```
 
 **重要说明**：
@@ -68,6 +72,9 @@ wrangler pages deploy dist --project-name=lovecompass
 2. 添加以下变量：
    - `SUPABASE_URL`（后端用）
    - `SUPABASE_ANON_KEY`（后端用）
+   - `LLM_API_KEY`（LLM API密钥）
+   - `LLM_BASE_URL`（LLM API基础URL，默认：https://api.openai.com/v1）
+   - `LLM_MODEL`（LLM模型，默认：gpt-4o-mini）
 
 ## 安全配置
 

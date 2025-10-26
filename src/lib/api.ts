@@ -195,3 +195,18 @@ export async function healthCheck(): Promise<boolean> {
   const result = await apiRequest<{ status: string }>('/health')
   return result.data?.status === 'ok'
 }
+
+// LLM对话接口
+export async function callLLM(step: string, userInput: string, draftData?: any): Promise<{ response: string } | null> {
+  const result = await apiRequest<{ response: string }>('/llm/chat', {
+    method: 'POST',
+    body: JSON.stringify({ step, userInput, draftData }),
+  })
+  
+  if (result.error) {
+    console.error('Error calling LLM:', result.error)
+    return null
+  }
+  
+  return result.data
+}

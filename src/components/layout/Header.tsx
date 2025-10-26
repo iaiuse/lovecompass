@@ -1,16 +1,17 @@
 import React from 'react';
-import { LogOut, User, Settings } from 'lucide-react';
-import Logo from './Logo';
-import { Method } from '../lib/supabase';
+import { LogOut, User, Settings, MessageCircle } from 'lucide-react';
+import Logo from '../ui/Logo';
+import { Method } from '../../lib/supabase';
 
 interface HeaderProps {
   user: any;
   methods: Method[];
   onSignOut: () => void;
   onShowMethodManager: () => void;
+  onShowLLMDialog: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ user, methods, onSignOut, onShowMethodManager }) => {
+const Header: React.FC<HeaderProps> = ({ user, methods, onSignOut, onShowMethodManager, onShowLLMDialog }) => {
   return (
     <header className="bg-white/90 backdrop-blur-lg border-b border-white/30 shadow-lg sticky top-0 z-40 relative">
       {/* 头部装饰渐变 */}
@@ -26,10 +27,21 @@ const Header: React.FC<HeaderProps> = ({ user, methods, onSignOut, onShowMethodM
               <h1 className="text-2xl font-bold bg-gradient-to-r from-pink-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
                 爱的转盘
               </h1>
-              <p className="text-sm text-slate-500 font-medium">深度探索轮盘 V3.2</p>
+              <p className="text-sm text-slate-500 font-medium">你最温暖的育儿锦囊 V3.2</p>
             </div>
           </div>
           <div className="flex items-center space-x-3">
+            <button
+              onClick={onShowLLMDialog}
+              className="group flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-blue-50 to-cyan-50 hover:from-blue-100 hover:to-cyan-100 rounded-full border border-blue-200 transition-all duration-300 transform hover:scale-105 shadow-md hover:shadow-lg"
+              title="AI育儿助手"
+            >
+              <MessageCircle className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform duration-300" />
+              <span className="text-sm font-semibold text-blue-700">
+                我有问题
+              </span>
+              <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
+            </button>
             <button
               onClick={onShowMethodManager}
               className="group flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-pink-50 to-purple-50 hover:from-pink-100 hover:to-purple-100 rounded-full border border-pink-200 transition-all duration-300 transform hover:scale-105 shadow-md hover:shadow-lg"

@@ -1,6 +1,6 @@
 import React from 'react';
 import { LogIn } from 'lucide-react';
-import Logo from './Logo';
+import Logo from '../ui/Logo';
 import AuthModal from './AuthModal';
 
 interface LoginPageProps {

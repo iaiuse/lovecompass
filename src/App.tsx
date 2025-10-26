@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { getMethods, getCasesByMethodId, createCase, updateCase, deleteCase, createMethod, Method, Case, CaseData } from './lib/api';
 import { createDefaultMethods, createDefaultCases } from './lib/defaultData';
-import ResponsiveWheel from './components/ResponsiveWheel';
-import MobileGrid from './components/MobileGrid';
-import CaseForm from './components/CaseForm';
-import DeleteConfirmModal from './components/DeleteConfirmModal';
-import LoadingSpinner from './components/LoadingSpinner';
-import AuthModal from './components/AuthModal';
-import MethodManager from './components/MethodManager';
-import Header from './components/Header';
-import LoginPage from './components/LoginPage';
-import WelcomeGuide from './components/WelcomeGuide';
-import CaseSelector from './components/CaseSelector';
-import FlippableCard from './components/FlippableCard';
+import ResponsiveWheel from './components/wheel/ResponsiveWheel';
+import MobileGrid from './components/wheel/MobileGrid';
+import CaseForm from './components/cases/CaseForm';
+import DeleteConfirmModal from './components/cases/DeleteConfirmModal';
+import LoadingSpinner from './components/ui/LoadingSpinner';
+import AuthModal from './components/auth/AuthModal';
+import MethodManager from './components/methods/MethodManager';
+import Header from './components/layout/Header';
+import LoginPage from './components/auth/LoginPage';
+import WelcomeGuide from './components/layout/WelcomeGuide';
+import CaseSelector from './components/cases/CaseSelector';
+import FlippableCard from './components/cases/FlippableCard';
+import LLMDialog from './components/llm/LLMDialog';
 import { useScreenSize } from './hooks/useScreenSize';
 import { useAuth } from './contexts/AuthContext';
 
@@ -61,6 +62,7 @@ function App() {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showMethodManager, setShowMethodManager] = useState(false);
   const [showWelcomeGuide, setShowWelcomeGuide] = useState(false);
+  const [showLLMDialog, setShowLLMDialog] = useState(false);
   const { isMobile } = useScreenSize();
   const { user, signOut, loading: authLoading } = useAuth();
 
@@ -107,6 +109,11 @@ function App() {
 
   const handleMethodsChange = (updatedMethods: Method[]) => {
     setMethods(updatedMethods);
+  };
+
+  const handleLLMCaseCreated = () => {
+    // 当LLM创建了新案例后，重新加载方法数据
+    loadMethods();
   };
 
   const handleSectorClick = async (method: Method) => {
@@ -234,6 +241,7 @@ function App() {
             methods={methods}
             onSignOut={handleSignOut}
             onShowMethodManager={() => setShowMethodManager(true)}
+            onShowLLMDialog={() => setShowLLMDialog(true)}
           />
         )}
 
@@ -318,6 +326,14 @@ function App() {
       <WelcomeGuide
         isVisible={showWelcomeGuide}
         onClose={() => setShowWelcomeGuide(false)}
+      />
+
+      {/* LLM对话模态框 */}
+      <LLMDialog
+        isVisible={showLLMDialog}
+        onClose={() => setShowLLMDialog(false)}
+        methods={methods}
+        onCaseCreated={handleLLMCaseCreated}
       />
     </>
   );

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Method } from '../lib/supabase';
+import { Method } from '../../lib/supabase';
 
 interface WheelSectorProps {
   method: Method;

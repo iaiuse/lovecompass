@@ -1,5 +1,5 @@
 import React from 'react';
-import Logo from './Logo';
+import Logo from '../ui/Logo';
 
 interface WelcomeGuideProps {
   isVisible: boolean;

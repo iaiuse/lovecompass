@@ -1,6 +1,6 @@
 import React from 'react';
-import { Method } from '../lib/supabase';
-import Logo from './Logo';
+import { Method } from '../../lib/supabase';
+import Logo from '../ui/Logo';
 
 interface MobileGridProps {
   methods: Method[];
