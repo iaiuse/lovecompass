@@ -86,6 +86,62 @@ export const supabase = {
     signOut: async () => {
       authManager.clearAuth()
       return { error: null }
+    },
+    
+    // 监听认证状态变化
+    onAuthStateChange: (callback: (event: string, session: any) => void) => {
+      // 模拟认证状态变化监听
+      // 由于我们使用简单的token管理，这里返回一个空的订阅对象
+      return {
+        data: {
+          subscription: {
+            unsubscribe: () => {
+              // 空实现，因为我们没有真正的实时监听
+            }
+          }
+        }
+      }
+    },
+    
+    // OAuth登录
+    signInWithOAuth: async (options: { provider: string; options?: any }) => {
+      // 这里应该重定向到实际的OAuth流程
+      // 暂时返回错误，提示需要实现OAuth
+      return { 
+        error: { 
+          message: 'OAuth login not implemented. Please use email/password authentication.' 
+        } 
+      }
+    },
+    
+    // 邮箱密码登录
+    signInWithPassword: async (credentials: { email: string; password: string }) => {
+      // 这里应该调用实际的登录API
+      return { 
+        error: { 
+          message: 'Please use the login function from auth.ts instead' 
+        } 
+      }
+    },
+    
+    // 注册
+    signUp: async (credentials: { email: string; password: string }) => {
+      // 这里应该调用实际的注册API
+      return { 
+        error: { 
+          message: 'Please use the register function from auth.ts instead' 
+        } 
+      }
+    },
+    
+    // 重置密码
+    resetPasswordForEmail: async (email: string, options?: any) => {
+      // 这里应该调用实际的密码重置API
+      return { 
+        error: { 
+          message: 'Password reset not implemented' 
+        } 
+      }
     }
   }
 }

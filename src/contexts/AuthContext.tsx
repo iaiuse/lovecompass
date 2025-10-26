@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import { User, Session, AuthError } from '@supabase/supabase-js'
 import { supabase } from '../lib/supabase'
+import { login, register, logout } from '../lib/auth'
 
 interface AuthContextType {
   user: User | null
@@ -56,41 +57,54 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, [])
 
   const signInWithGoogle = async () => {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback`
-      }
-    })
-    return { error }
+    // Google OAuth 暂时未实现，返回错误
+    return { 
+      error: { 
+        message: 'Google OAuth login not implemented. Please use email/password authentication.' 
+      } 
+    }
   }
 
   const signInWithEmail = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password
-    })
-    return { error }
+    const result = await login(email, password)
+    if (result.success) {
+      // 登录成功后，重新获取用户信息
+      const { data: { session } } = await supabase.auth.getSession()
+      setSession(session)
+      setUser(session?.user ?? null)
+    }
+    return { 
+      error: result.success ? null : { message: result.error || 'Login failed' }
+    }
   }
 
   const signUpWithEmail = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signUp({
-      email,
-      password
-    })
-    return { error }
+    const result = await register(email, password)
+    if (result.success) {
+      // 注册成功后，重新获取用户信息
+      const { data: { session } } = await supabase.auth.getSession()
+      setSession(session)
+      setUser(session?.user ?? null)
+    }
+    return { 
+      error: result.success ? null : { message: result.error || 'Registration failed' }
+    }
   }
 
   const signOut = async () => {
-    const { error } = await supabase.auth.signOut()
-    return { error }
+    await logout()
+    setSession(null)
+    setUser(null)
+    return { error: null }
   }
 
   const resetPassword = async (email: string) => {
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/auth/reset-password`
-    })
-    return { error }
+    // 密码重置功能暂时未实现
+    return { 
+      error: { 
+        message: 'Password reset not implemented' 
+      } 
+    }
   }
 
   const value = {
